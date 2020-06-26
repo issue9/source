@@ -75,6 +75,9 @@ func CurrentFunction() string {
 }
 
 // TraceStack 返回调用者的堆栈信息
+//
+// level 表示调用者的级别，1 表示 TraceStack 自身，2 表示调用 TraceStack 的方法，以此类推；
+// msg 表示需要输出的额外信息；
 func TraceStack(level int, msg ...interface{}) (string, error) {
 	var w errwrap.StringBuilder
 
@@ -94,6 +97,5 @@ func TraceStack(level int, msg ...interface{}) (string, error) {
 	if w.Err != nil {
 		return "", w.Err
 	}
-
 	return w.String(), nil
 }

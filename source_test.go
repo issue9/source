@@ -5,6 +5,7 @@ package source
 import (
 	"io/ioutil"
 	"path/filepath"
+	"strings"
 	"testing"
 
 	"github.com/issue9/assert"
@@ -58,5 +59,14 @@ func TestCurrentFunction(t *testing.T) {
 func TestCurrentLine(t *testing.T) {
 	a := assert.New(t)
 
-	a.Equal(CurrentLine(), 61)
+	a.Equal(CurrentLine(), 62)
+}
+
+func TestTraceStack(t *testing.T) {
+	a := assert.New(t)
+
+	str, err := TraceStack(1, "message", 12)
+	a.NotError(err)
+	a.True(strings.HasPrefix(str, "message 12"))
+	a.True(strings.Contains(str, "source_test.go")) // 肯定包含当前文件名
 }
