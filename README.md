@@ -4,7 +4,7 @@ source
 [![codecov](https://codecov.io/gh/issue9/source/branch/master/graph/badge.svg)](https://codecov.io/gh/issue9/source)
 ======
 
-source 包提供了一些与源码相关的功能
+source 模块提供了一些与源码相关的功能
 
 - DumpGoSource 输出并格式化 Go 的源代码；
 - CurrentFile 相当于部分语言的 `__FILE__`；
