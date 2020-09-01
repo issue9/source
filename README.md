@@ -1,5 +1,5 @@
 source
-[![Build Status](https://img.shields.io/endpoint.svg?url=https%3A%2F%2Factions-badge.atrox.dev%2Fissue9%2Fsource%2Fbadge%3Fref%3Dmaster&style=flat)](https://actions-badge.atrox.dev/issue9/source/goto?ref=master)
+[![Go](https://github.com/issue9/source/workflows/Go/badge.svg)](https://github.com/issue9/source/actions?query=workflow%3AGo)
 [![license](https://img.shields.io/badge/license-MIT-brightgreen.svg?style=flat)](https://opensource.org/licenses/MIT)
 [![codecov](https://codecov.io/gh/issue9/source/branch/master/graph/badge.svg)](https://codecov.io/gh/issue9/source)
 ======
@@ -23,7 +23,7 @@ go get github.com/issue9/source
 文档
 ----
 
-[![go.dev reference](https://img.shields.io/badge/go.dev-reference-007d9c?logo=go&logoColor=white&style=flat-square)](https://pkg.go.dev/github.com/issue9/source)
+[![PkgGoDev](https://pkg.go.dev/badge/github.com/issue9/source)](https://pkg.go.dev/github.com/issue9/source)
 
 版权
 ----
