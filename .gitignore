@@ -17,3 +17,5 @@
 
 testdata/*
 !/testdata/.gitkeep
+.idea/
+.vscode/
