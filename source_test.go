@@ -62,6 +62,14 @@ func TestCurrentLine(t *testing.T) {
 	a.Equal(CurrentLine(), 62)
 }
 
+func TestCurrentLocation(t *testing.T) {
+	a:=assert.New(t)
+
+	path,line :=CurrentLocation()
+	a.True(strings.HasSuffix(path,"source_test.go")).
+		Equal(line,68)
+}
+
 func TestTraceStack(t *testing.T) {
 	a := assert.New(t)
 

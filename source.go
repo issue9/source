@@ -59,6 +59,12 @@ func CurrentLine() int {
 	return line
 }
 
+// CurrentLocation 获取调用者当前的位置信息
+func CurrentLocation() (path string,line int) {
+	_, path,line,_ =runtime.Caller(1)
+	return path,line
+}
+
 // CurrentFunction 获取`调用者`所在的函数名
 //
 // 相当于部分语言的 __FUNCTION__
