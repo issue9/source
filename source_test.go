@@ -8,11 +8,11 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/issue9/assert"
+	"github.com/issue9/assert/v2"
 )
 
 func TestDumpGoFile(t *testing.T) {
-	a := assert.New(t)
+	a := assert.New(t, false)
 
 	a.NotError(DumpGoSource("./testdata/go.go", []byte("var x=1")))
 	content, err := ioutil.ReadFile("./testdata/go.go")
@@ -21,7 +21,7 @@ func TestDumpGoFile(t *testing.T) {
 }
 
 func TestCurrentPath(t *testing.T) {
-	a := assert.New(t)
+	a := assert.New(t, false)
 
 	dir, err := filepath.Abs("./file.go")
 	a.NotError(err).NotEmpty(dir)
@@ -33,7 +33,7 @@ func TestCurrentPath(t *testing.T) {
 }
 
 func TestCurrentDir(t *testing.T) {
-	a := assert.New(t)
+	a := assert.New(t, false)
 
 	dir, err := filepath.Abs("./")
 	a.NotError(err).NotEmpty(dir)
@@ -42,7 +42,7 @@ func TestCurrentDir(t *testing.T) {
 }
 
 func TestCurrentFile(t *testing.T) {
-	a := assert.New(t)
+	a := assert.New(t, false)
 
 	filename, err := filepath.Abs("./source_test.go")
 	a.NotError(err).NotEmpty(filename)
@@ -51,27 +51,27 @@ func TestCurrentFile(t *testing.T) {
 }
 
 func TestCurrentFunction(t *testing.T) {
-	a := assert.New(t)
+	a := assert.New(t, false)
 
 	a.Equal(CurrentFunction(), "TestCurrentFunction")
 }
 
 func TestCurrentLine(t *testing.T) {
-	a := assert.New(t)
+	a := assert.New(t, false)
 
 	a.Equal(CurrentLine(), 62)
 }
 
 func TestCurrentLocation(t *testing.T) {
-	a:=assert.New(t)
+	a := assert.New(t, false)
 
-	path,line :=CurrentLocation()
-	a.True(strings.HasSuffix(path,"source_test.go")).
-		Equal(line,68)
+	path, line := CurrentLocation()
+	a.True(strings.HasSuffix(path, "source_test.go")).
+		Equal(line, 68)
 }
 
 func TestTraceStack(t *testing.T) {
-	a := assert.New(t)
+	a := assert.New(t, false)
 
 	str, err := TraceStack(1, "message", 12)
 	a.NotError(err)
