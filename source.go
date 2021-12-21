@@ -1,6 +1,6 @@
 // SPDX-License-Identifier: MIT
 
-// Package source 提供与 go 源码相关的一些操作
+// Package source 提供与 Go 源码相关的一些操作
 package source
 
 import (
@@ -23,7 +23,6 @@ func DumpGoSource(path string, content []byte) error {
 	if err != nil {
 		return err
 	}
-
 	return ioutil.WriteFile(path, src, os.ModePerm)
 }
 
@@ -60,9 +59,9 @@ func CurrentLine() int {
 }
 
 // CurrentLocation 获取调用者当前的位置信息
-func CurrentLocation() (path string,line int) {
-	_, path,line,_ =runtime.Caller(1)
-	return path,line
+func CurrentLocation() (path string, line int) {
+	_, path, line, _ = runtime.Caller(1)
+	return path, line
 }
 
 // CurrentFunction 获取`调用者`所在的函数名
@@ -80,24 +79,27 @@ func CurrentFunction() string {
 	return name
 }
 
-// TraceStack 返回调用者的堆栈信息
+// Stack 返回调用者的堆栈信息
 //
-// level 表示调用者的级别，1 表示 TraceStack 自身，2 表示调用 TraceStack 的方法，以此类推；
+// skip 需要忽略的内容。
+// 1 表示 Stack 自身， 2 表示 TraceStack 的调用者，以此类推；
 // msg 表示需要输出的额外信息；
-func TraceStack(level int, msg ...interface{}) (string, error) {
+func Stack(skip int, msg ...interface{}) (string, error) {
 	var w errwrap.StringBuilder
 
 	if len(msg) > 0 {
 		w.Println(msg...)
 	}
 
-	for i := level; true; i++ {
-		_, file, line, ok := runtime.Caller(i)
+	for i := skip; true; i++ {
+		pc, file, line, ok := runtime.Caller(i)
 		if !ok {
 			break
 		}
 
-		w.WString(file).WByte(':').WString(strconv.Itoa(line)).WByte('\n')
+		fn := runtime.FuncForPC(pc)
+		w.WString(fn.Name()).WByte('\n')
+		w.WByte('\t').WString(file).WByte(':').WString(strconv.Itoa(line)).WByte('\n')
 	}
 
 	if w.Err != nil {

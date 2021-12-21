@@ -70,11 +70,12 @@ func TestCurrentLocation(t *testing.T) {
 		Equal(line, 68)
 }
 
-func TestTraceStack(t *testing.T) {
+func TestStack(t *testing.T) {
 	a := assert.New(t, false)
 
-	str, err := TraceStack(1, "message", 12)
+	str, err := Stack(1, "message", 12)
+	t.Log(str)
 	a.NotError(err)
 	a.True(strings.HasPrefix(str, "message 12"))
-	a.True(strings.Contains(str, "source_test.go")) // 肯定包含当前文件名
+	a.True(strings.Contains(str, "source_test.go:76")) // 依赖调用的行号
 }
