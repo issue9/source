@@ -2,6 +2,7 @@ source
 [![Go](https://github.com/issue9/source/workflows/Go/badge.svg)](https://github.com/issue9/source/actions?query=workflow%3AGo)
 [![license](https://img.shields.io/badge/license-MIT-brightgreen.svg?style=flat)](https://opensource.org/licenses/MIT)
 [![codecov](https://codecov.io/gh/issue9/source/branch/master/graph/badge.svg)](https://codecov.io/gh/issue9/source)
+![Go version](https://img.shields.io/github/go-mod/go-version/issue9/source)
 ======
 
 source 模块提供了一些与源码相关的功能
