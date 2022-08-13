@@ -3,6 +3,7 @@ source
 [![license](https://img.shields.io/badge/license-MIT-brightgreen.svg?style=flat)](https://opensource.org/licenses/MIT)
 [![codecov](https://codecov.io/gh/issue9/source/branch/master/graph/badge.svg)](https://codecov.io/gh/issue9/source)
 ![Go version](https://img.shields.io/github/go-mod/go-version/issue9/source)
+[![PkgGoDev](https://pkg.go.dev/badge/github.com/issue9/source)](https://pkg.go.dev/github.com/issue9/source)
 ======
 
 source 模块提供了一些与源码相关的功能
@@ -12,7 +13,7 @@ source 模块提供了一些与源码相关的功能
 - CurrentDir 相当于部分语言的 `__DIR__`；
 - CurrentLine 相当于部分语言的 `__LINE__`；
 - CurrentFunction 相当于部分语言的 `__FUNCTION__`；
-- TraceStack 返回调用者的堆栈信息；
+- Stack 返回调用者的堆栈信息；
 
 安装
 ----

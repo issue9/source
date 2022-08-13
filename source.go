@@ -82,7 +82,10 @@ func CurrentFunction() string {
 // Stack 返回调用者的堆栈信息
 //
 // skip 需要忽略的内容。
-// 1 表示 Stack 自身， 2 表示 TraceStack 的调用者，以此类推；
+//
+//  - 1 表示 Stack 自身；
+//  - 2 表示 Stack 的调用者，以此类推；
+//
 // msg 表示需要输出的额外信息；
 func Stack(skip int, msg ...interface{}) (string, error) {
 	var w errwrap.StringBuilder
