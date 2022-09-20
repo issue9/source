@@ -90,7 +90,7 @@ func CurrentFunction() string {
 // msg 表示需要输出的额外信息；
 func Stack(skip int, msg ...interface{}) string {
 	buf := &bytes.Buffer{}
-	DumpStack(buf, skip-1, msg...)
+	DumpStack(buf, skip+1, msg...)
 	return buf.String()
 }
 
