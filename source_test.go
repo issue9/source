@@ -3,7 +3,7 @@
 package source
 
 import (
-	"io/ioutil"
+	"os"
 	"path/filepath"
 	"strings"
 	"testing"
@@ -15,7 +15,7 @@ func TestDumpGoFile(t *testing.T) {
 	a := assert.New(t, false)
 
 	a.NotError(DumpGoSource("./testdata/go.go", []byte("var x=1")))
-	content, err := ioutil.ReadFile("./testdata/go.go")
+	content, err := os.ReadFile("./testdata/go.go")
 	a.NotError(err)
 	a.Equal(string(content), "var x = 1")
 }
@@ -73,9 +73,8 @@ func TestCurrentLocation(t *testing.T) {
 func TestStack(t *testing.T) {
 	a := assert.New(t, false)
 
-	str, err := Stack(1, "message", 12)
+	str := Stack(1, "message", 12)
 	t.Log(str)
-	a.NotError(err)
 	a.True(strings.HasPrefix(str, "message 12"))
-	a.True(strings.Contains(str, "source_test.go:76")) // 依赖调用的行号
+	a.True(strings.Contains(str, "source_test.go:76"), str) // 依赖调用的行号
 }

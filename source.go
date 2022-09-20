@@ -5,7 +5,6 @@ package source
 
 import (
 	"go/format"
-	"io/ioutil"
 	"os"
 	"path/filepath"
 	"runtime"
@@ -23,7 +22,7 @@ func DumpGoSource(path string, content []byte) error {
 	if err != nil {
 		return err
 	}
-	return ioutil.WriteFile(path, src, os.ModePerm)
+	return os.WriteFile(path, src, os.ModePerm)
 }
 
 // CurrentPath 获取`调用者`所在目录的路径
@@ -83,30 +82,34 @@ func CurrentFunction() string {
 //
 // skip 需要忽略的内容。
 //
-//  - 1 表示 Stack 自身；
-//  - 2 表示 Stack 的调用者，以此类推；
+//   - 1 表示 Stack 自身；
+//   - 2 表示 Stack 的调用者，以此类推；
 //
 // msg 表示需要输出的额外信息；
-func Stack(skip int, msg ...interface{}) (string, error) {
-	var w errwrap.StringBuilder
-
-	if len(msg) > 0 {
-		w.Println(msg...)
+func Stack(skip int, msg ...interface{}) string {
+	pc := make([]uintptr, 10)
+	n := runtime.Callers(skip, pc)
+	if n == 0 {
+		return ""
 	}
 
-	for i := skip; true; i++ {
-		pc, file, line, ok := runtime.Caller(i)
-		if !ok {
+	pc = pc[:n]
+	frames := runtime.CallersFrames(pc)
+
+	buf := errwrap.Buffer{}
+	buf.Println(msg...)
+	for {
+		frame, more := frames.Next()
+		if !more {
 			break
 		}
 
-		fn := runtime.FuncForPC(pc)
-		w.WString(fn.Name()).WByte('\n')
-		w.WByte('\t').WString(file).WByte(':').WString(strconv.Itoa(line)).WByte('\n')
-	}
+		if strings.Contains(frame.File, "runtime/") { // 忽略 runtime 下的系统调用
+			continue
+		}
 
-	if w.Err != nil {
-		return "", w.Err
+		buf.WString(frame.Function).WByte('\n').
+			WByte('\t').WString(frame.File).WByte(':').WString(strconv.Itoa(frame.Line)).WByte('\n')
 	}
-	return w.String(), nil
+	return buf.String()
 }
