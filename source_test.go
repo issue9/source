@@ -18,6 +18,8 @@ func TestDumpGoFile(t *testing.T) {
 	content, err := os.ReadFile("./testdata/go.go")
 	a.NotError(err)
 	a.Equal(string(content), "var x = 1")
+
+	os.Remove("./testdata/go.go")
 }
 
 func TestCurrentPath(t *testing.T) {
@@ -59,7 +61,7 @@ func TestCurrentFunction(t *testing.T) {
 func TestCurrentLine(t *testing.T) {
 	a := assert.New(t, false)
 
-	a.Equal(CurrentLine(), 62)
+	a.Equal(CurrentLine(), 64)
 }
 
 func TestCurrentLocation(t *testing.T) {
@@ -67,7 +69,7 @@ func TestCurrentLocation(t *testing.T) {
 
 	path, line := CurrentLocation()
 	a.True(strings.HasSuffix(path, "source_test.go")).
-		Equal(line, 68)
+		Equal(line, 70)
 }
 
 func TestStack(t *testing.T) {
@@ -76,5 +78,5 @@ func TestStack(t *testing.T) {
 	str := Stack(1, "message", 12)
 	t.Log(str)
 	a.True(strings.HasPrefix(str, "message 12"))
-	a.True(strings.Contains(str, "source_test.go:76"), str) // 依赖调用的行号
+	a.True(strings.Contains(str, "source_test.go:78"), str) // 依赖调用 Stack 的行号
 }

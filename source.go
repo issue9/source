@@ -80,7 +80,7 @@ func CurrentFunction() string {
 	return name
 }
 
-// Stack 返回调用者的堆栈信息
+// Stack 返回调用堆栈信息
 //
 // skip 需要忽略的内容。
 //
@@ -94,7 +94,7 @@ func Stack(skip int, msg ...interface{}) string {
 	return buf.String()
 }
 
-// DumpStack 返回调用者的堆栈信息至 w
+// DumpStack 将调用的堆栈信息写入 w
 //
 // skip 需要忽略的内容。
 //

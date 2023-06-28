@@ -15,8 +15,6 @@
 # vendor/
 
 
-testdata/*
-!/testdata/.gitkeep
 .idea/
 .vscode/
 .DS_Store

@@ -5,4 +5,5 @@ go 1.17
 require (
 	github.com/issue9/assert/v3 v3.0.4
 	github.com/issue9/errwrap v0.3.1
+	golang.org/x/mod v0.11.0
 )
