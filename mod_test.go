@@ -26,3 +26,22 @@ func TestModFile(t *testing.T) {
 	f, err = ModFile(dir)
 	a.Error(err).Nil(f)
 }
+
+func TestModPath(t *testing.T) {
+	a := assert.New(t, false)
+
+	p, err := ModPath("./")
+	a.NotError(err).Equal(p, "github.com/issue9/source")
+
+	p, err = ModPath("./testdata")
+	a.NotError(err).Equal(p, "github.com/issue9/source/testdata")
+
+	p, err = ModPath("./testdata/go.mod/sub/")
+	a.NotError(err).Equal(p, "github.com/issue9/source/mod/sub")
+
+	p, err = ModPath("./testdata/go.mod/sub/sub.go")
+	a.NotError(err).Equal(p, "github.com/issue9/source/mod/sub")
+
+	p, err = ModPath("./testdata/go.mod/go.mod")
+	a.NotError(err).Equal(p, "github.com/issue9/source/mod")
+}
