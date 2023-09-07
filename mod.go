@@ -12,6 +12,8 @@ import (
 	"golang.org/x/mod/modfile"
 )
 
+const modFile = "go.mod"
+
 // ModFile 查找 dir 所在模块的 go.mod 内容
 //
 // 从当前目录开始依次向上查找  go.mod，从其中获取 module 变量的值。
@@ -23,7 +25,7 @@ func ModFile(dir string) (*modfile.File, error) {
 
 LOOP:
 	for {
-		path := filepath.Join(abs, "go.mod")
+		path := filepath.Join(abs, modFile)
 		stat, err := os.Stat(path)
 		switch {
 		case err == nil:
@@ -51,6 +53,8 @@ LOOP:
 }
 
 // ModPath 目录 dir 所在 Go 文件的导出路径
+//
+// 会向上查找 go.mod，根据 go.mod 中的 module 结合当前目录组成当前目录的导出路径。
 func ModPath(dir string) (string, error) {
 	abs, err := filepath.Abs(dir)
 	if err != nil {
@@ -68,7 +72,7 @@ func ModPath(dir string) (string, error) {
 	pkgNames := make([]string, 0, 10)
 LOOP:
 	for {
-		p := filepath.Join(abs, "go.mod")
+		p := filepath.Join(abs, modFile)
 		stat, err := os.Stat(p)
 		switch {
 		case err == nil:
