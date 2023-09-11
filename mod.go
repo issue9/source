@@ -14,13 +14,27 @@ import (
 
 const modFile = "go.mod"
 
-// ModFile 查找 dir 所在模块的 go.mod 内容
+// ModFile 查找 p 所在模块的 go.mod 内容
 //
 // 从当前目录开始依次向上查找  go.mod，从其中获取 module 变量的值。
-func ModFile(dir string) (*modfile.File, error) {
-	abs, err := filepath.Abs(dir)
+func ModFile(p string) (*modfile.File, error) {
+	path, err := ModDir(p)
 	if err != nil {
 		return nil, err
+	}
+
+	data, err := os.ReadFile(path)
+	if err != nil {
+		return nil, err
+	}
+	return modfile.Parse(path, data, nil)
+}
+
+// ModDir 向上查找 go.mod 所在的目录
+func ModDir(p string) (string, error) {
+	abs, err := filepath.Abs(p)
+	if err != nil {
+		return "", err
 	}
 
 LOOP:
@@ -34,29 +48,25 @@ LOOP:
 				continue LOOP
 			}
 
-			data, err := os.ReadFile(path)
-			if err != nil {
-				return nil, err
-			}
-			return modfile.Parse(path, data, nil)
+			return path, nil
 		case errors.Is(err, os.ErrNotExist):
 			abs1 := filepath.Dir(abs)
 			if abs1 == abs {
-				return nil, os.ErrNotExist
+				return "", os.ErrNotExist
 			}
 			abs = abs1
 			continue LOOP
 		default: // 文件存在，但是出错。
-			return nil, err
+			return "", err
 		}
 	}
 }
 
-// ModPath 目录 dir 所在 Go 文件的导出路径
+// ModPath p 所在 Go 文件的导出路径
 //
 // 会向上查找 go.mod，根据 go.mod 中的 module 结合当前目录组成当前目录的导出路径。
-func ModPath(dir string) (string, error) {
-	abs, err := filepath.Abs(dir)
+func ModPath(p string) (string, error) {
+	abs, err := filepath.Abs(p)
 	if err != nil {
 		return "", err
 	}
