@@ -18,7 +18,7 @@ const modFile = "go.mod"
 //
 // 从当前目录开始依次向上查找  go.mod，从其中获取 module 变量的值。
 func ModFile(p string) (*modfile.File, error) {
-	path, err := ModDir(p)
+	path, err := modDir(p)
 	if err != nil {
 		return nil, err
 	}
@@ -32,6 +32,14 @@ func ModFile(p string) (*modfile.File, error) {
 
 // ModDir 向上查找 go.mod 所在的目录
 func ModDir(p string) (string, error) {
+	dir, err := modDir(p)
+	if err != nil {
+		return "", err
+	}
+	return filepath.Dir(dir), nil
+}
+
+func modDir(p string) (string, error) {
 	abs, err := filepath.Abs(p)
 	if err != nil {
 		return "", err

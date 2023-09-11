@@ -27,6 +27,13 @@ func TestModFile(t *testing.T) {
 	a.Error(err).Nil(f)
 }
 
+func TestModDir(t *testing.T) {
+	a := assert.New(t, false)
+
+	d, err := ModDir("./")
+	a.NotError(err).NotEmpty(d)
+}
+
 func TestModPath(t *testing.T) {
 	a := assert.New(t, false)
 
