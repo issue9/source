@@ -16,9 +16,7 @@ import (
 	"github.com/issue9/errwrap"
 )
 
-// DumpGoSource 输出 Go 源码到 path
-//
-// 会对源代码作格式化。
+// DumpGoSource 格式化并输出 Go 源码到 path
 func DumpGoSource(path string, content []byte) error {
 	src, err := format.Source(content)
 	if err != nil {
@@ -59,7 +57,7 @@ func CurrentLine() int {
 	return line
 }
 
-// CurrentLocation 获取调用者当前的位置信息
+// CurrentLocation 获取`调用者`当前的位置信息
 func CurrentLocation() (path string, line int) {
 	_, path, line, _ = runtime.Caller(1)
 	return path, line
