@@ -16,18 +16,24 @@ const modFile = "go.mod"
 
 // ModFile 查找 p 所在模块的 go.mod 内容
 //
-// 从当前目录开始依次向上查找  go.mod，从其中获取 module 变量的值。
-func ModFile(p string) (*modfile.File, error) {
+// 从当前目录开始依次向上查找  go.mod，从其中获取 go.mod 文件位置，以及文件内容的解析。
+func ModFile(p string) (string, *modfile.File, error) {
 	path, err := modDir(p)
 	if err != nil {
-		return nil, err
+		return "", nil, err
 	}
 
 	data, err := os.ReadFile(path)
 	if err != nil {
-		return nil, err
+		return "", nil, err
 	}
-	return modfile.Parse(path, data, nil)
+
+	mod, err := modfile.Parse(path, data, nil)
+	if err != nil {
+		return "", nil, err
+	}
+
+	return path, mod, nil
 }
 
 // ModDir 向上查找 go.mod 所在的目录

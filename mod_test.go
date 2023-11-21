@@ -12,19 +12,19 @@ import (
 func TestModFile(t *testing.T) {
 	a := assert.New(t, false)
 
-	f, err := ModFile("./")
-	a.NotError(err).NotNil(f).Equal(f.Module.Mod.Path, "github.com/issue9/source")
+	p, f, err := ModFile("./")
+	a.NotError(err).NotNil(f).Equal(f.Module.Mod.Path, "github.com/issue9/source").NotEmpty(p)
 
-	f, err = ModFile("./testdata")
-	a.NotError(err).NotNil(f).Equal(f.Module.Mod.Path, "github.com/issue9/source")
+	p, f, err = ModFile("./testdata")
+	a.NotError(err).NotNil(f).Equal(f.Module.Mod.Path, "github.com/issue9/source").NotEmpty(p)
 
 	// NOTE: 可能不存在 c:\windows\system32 或是 c:\windows\system32 下正好存在一个 go.mod
 	dir := "/windows/system32"
 	if runtime.GOOS == "windows" {
 		dir = "c:\\windows\\system32"
 	}
-	f, err = ModFile(dir)
-	a.Error(err).Nil(f)
+	p, f, err = ModFile(dir)
+	a.Error(err).Nil(f).Empty(p)
 }
 
 func TestModDir(t *testing.T) {
