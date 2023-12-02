@@ -76,10 +76,10 @@ LOOP:
 	}
 }
 
-// ModPath p 所在 Go 文件的导出路径
+// PackagePath p 所在 Go 文件的导出路径
 //
 // 会向上查找 go.mod，根据 go.mod 中的 module 结合当前目录组成当前目录的导出路径。
-func ModPath(p string) (string, error) {
+func PackagePath(p string) (string, error) {
 	abs, err := filepath.Abs(p)
 	if err != nil {
 		return "", err

@@ -34,21 +34,21 @@ func TestModDir(t *testing.T) {
 	a.NotError(err).NotEmpty(d)
 }
 
-func TestModPath(t *testing.T) {
+func TestPackagePath(t *testing.T) {
 	a := assert.New(t, false)
 
-	p, err := ModPath("./")
+	p, err := PackagePath("./")
 	a.NotError(err).Equal(p, "github.com/issue9/source")
 
-	p, err = ModPath("./testdata")
+	p, err = PackagePath("./testdata")
 	a.NotError(err).Equal(p, "github.com/issue9/source/testdata")
 
-	p, err = ModPath("./testdata/go.mod/sub/")
+	p, err = PackagePath("./testdata/go.mod/sub/")
 	a.NotError(err).Equal(p, "github.com/issue9/source/mod/sub")
 
-	p, err = ModPath("./testdata/go.mod/sub/sub.go")
+	p, err = PackagePath("./testdata/go.mod/sub/sub.go")
 	a.NotError(err).Equal(p, "github.com/issue9/source/mod/sub")
 
-	p, err = ModPath("./testdata/go.mod/go.mod")
+	p, err = PackagePath("./testdata/go.mod/go.mod")
 	a.NotError(err).Equal(p, "github.com/issue9/source/mod")
 }
