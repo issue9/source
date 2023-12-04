@@ -5,9 +5,7 @@ package source
 
 import (
 	"bytes"
-	"go/format"
 	"io"
-	"os"
 	"path/filepath"
 	"runtime"
 	"strconv"
@@ -15,15 +13,6 @@ import (
 
 	"github.com/issue9/errwrap"
 )
-
-// DumpGoSource 格式化并输出 Go 源码到 path
-func DumpGoSource(path string, content []byte) error {
-	src, err := format.Source(content)
-	if err != nil {
-		return err
-	}
-	return os.WriteFile(path, src, os.ModePerm)
-}
 
 // CurrentPath 获取`调用者`所在目录的路径
 //

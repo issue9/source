@@ -3,24 +3,12 @@
 package source
 
 import (
-	"os"
 	"path/filepath"
 	"strings"
 	"testing"
 
 	"github.com/issue9/assert/v3"
 )
-
-func TestDumpGoFile(t *testing.T) {
-	a := assert.New(t, false)
-
-	a.NotError(DumpGoSource("./testdata/go.go", []byte("var x=1")))
-	content, err := os.ReadFile("./testdata/go.go")
-	a.NotError(err)
-	a.Equal(string(content), "var x = 1")
-
-	os.Remove("./testdata/go.go")
-}
 
 func TestCurrentPath(t *testing.T) {
 	a := assert.New(t, false)
