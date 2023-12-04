@@ -49,7 +49,7 @@ func TestCurrentFunction(t *testing.T) {
 func TestCurrentLine(t *testing.T) {
 	a := assert.New(t, false)
 
-	a.Equal(CurrentLine(), 64)
+	a.Equal(CurrentLine(), 52)
 }
 
 func TestCurrentLocation(t *testing.T) {
@@ -57,7 +57,7 @@ func TestCurrentLocation(t *testing.T) {
 
 	path, line := CurrentLocation()
 	a.True(strings.HasSuffix(path, "source_test.go")).
-		Equal(line, 70)
+		Equal(line, 58)
 }
 
 func TestStack(t *testing.T) {
@@ -66,5 +66,5 @@ func TestStack(t *testing.T) {
 	str := Stack(1, "message", 12)
 	t.Log(str)
 	a.True(strings.HasPrefix(str, "message 12"))
-	a.True(strings.Contains(str, "source_test.go:78"), str) // 依赖调用 Stack 的行号
+	a.True(strings.Contains(str, "source_test.go:66"), str) // 依赖调用 Stack 的行号
 }
