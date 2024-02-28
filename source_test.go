@@ -1,3 +1,5 @@
+// SPDX-FileCopyrightText: 2020-2024 caixw
+//
 // SPDX-License-Identifier: MIT
 
 package source
@@ -7,7 +9,7 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/issue9/assert/v3"
+	"github.com/issue9/assert/v4"
 )
 
 func TestCurrentPath(t *testing.T) {
@@ -49,7 +51,7 @@ func TestCurrentFunction(t *testing.T) {
 func TestCurrentLine(t *testing.T) {
 	a := assert.New(t, false)
 
-	a.Equal(CurrentLine(), 52)
+	a.Equal(CurrentLine(), 54)
 }
 
 func TestCurrentLocation(t *testing.T) {
@@ -57,7 +59,7 @@ func TestCurrentLocation(t *testing.T) {
 
 	path, line := CurrentLocation()
 	a.True(strings.HasSuffix(path, "source_test.go")).
-		Equal(line, 58)
+		Equal(line, 60)
 }
 
 func TestStack(t *testing.T) {
@@ -66,5 +68,5 @@ func TestStack(t *testing.T) {
 	str := Stack(1, "message", 12)
 	t.Log(str)
 	a.True(strings.HasPrefix(str, "message 12"))
-	a.True(strings.Contains(str, "source_test.go:66"), str) // 依赖调用 Stack 的行号
+	a.True(strings.Contains(str, "source_test.go:68"), str) // 依赖调用 Stack 的行号
 }
