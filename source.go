@@ -77,7 +77,7 @@ func CurrentFunction() string {
 //   - 2 表示 Stack 的调用者，以此类推；
 //
 // msg 表示需要输出的额外信息；
-func Stack(skip int, msg ...interface{}) string {
+func Stack(skip int, msg ...any) string {
 	buf := &bytes.Buffer{}
 	DumpStack(buf, skip+1, msg...)
 	return buf.String()
@@ -91,7 +91,7 @@ func Stack(skip int, msg ...interface{}) string {
 //   - 2 表示 Stack 的调用者，以此类推；
 //
 // msg 表示需要输出的额外信息；
-func DumpStack(w io.Writer, skip int, msg ...interface{}) {
+func DumpStack(w io.Writer, skip int, msg ...any) {
 	pc := make([]uintptr, 10)
 	n := runtime.Callers(skip, pc)
 	if n == 0 {
