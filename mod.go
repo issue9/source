@@ -16,7 +16,7 @@ import (
 
 const modFile = "go.mod"
 
-// ModFile 查找 p 所在模块的 go.mod 内容
+// ModFile 文件或目录 p 所在模块的 go.mod 内容
 //
 // 从当前目录开始依次向上查找  go.mod，从其中获取 go.mod 文件位置，以及文件内容的解析。
 func ModFile(p string) (string, *modfile.File, error) {
@@ -38,7 +38,7 @@ func ModFile(p string) (string, *modfile.File, error) {
 	return path, mod, nil
 }
 
-// ModDir 向上查找 go.mod 所在的目录
+// ModDir 向上查找 p 所在的目录的 go.mod
 func ModDir(p string) (string, error) {
 	dir, err := modDir(p)
 	if err != nil {
@@ -78,7 +78,7 @@ LOOP:
 	}
 }
 
-// PackagePath p 所在 Go 文件的导出路径
+// PackagePath 文件或目录 p 所在 Go 文件的导出路径
 //
 // 会向上查找 go.mod，根据 go.mod 中的 module 结合当前目录组成当前目录的导出路径。
 func PackagePath(p string) (string, error) {

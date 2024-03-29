@@ -14,6 +14,9 @@ source 模块提供了一些与源码相关的功能
 - CurrentLine 相当于部分语言的 `__LINE__`；
 - CurrentFunction 相当于部分语言的 `__FUNCTION__`；
 - Stack 返回调用者的堆栈信息；
+- ModFile 文件或目录 p 所在模块的 go.mod 内容；
+- ModDir 向上查找 p 所在的目录的 go.mod；
+- PackagePath 文件或目录 p 所在 Go 文件的导出路径；
 
 安装
 ----
@@ -21,11 +24,6 @@ source 模块提供了一些与源码相关的功能
 ```shell
 go get github.com/issue9/source
 ```
-
-文档
-----
-
-[![PkgGoDev](https://pkg.go.dev/badge/github.com/issue9/source)](https://pkg.go.dev/github.com/issue9/source)
 
 版权
 ----
