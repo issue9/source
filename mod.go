@@ -9,8 +9,8 @@ import (
 	"os"
 	"path"
 	"path/filepath"
+	"slices"
 
-	"github.com/issue9/sliceutil"
 	"golang.org/x/mod/modfile"
 )
 
@@ -118,7 +118,7 @@ LOOP:
 			}
 
 			pkgNames = append(pkgNames, mod.Module.Mod.Path)
-			sliceutil.Reverse(pkgNames)
+			slices.Reverse(pkgNames)
 			return path.Join(pkgNames...), nil
 		case errors.Is(err, os.ErrNotExist):
 			// 这两行不能用 filepath.Split 代替，split 会为 abs1 留下最后的分隔符，
