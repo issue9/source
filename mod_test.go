@@ -5,11 +5,41 @@
 package source
 
 import (
+	"io/fs"
 	"runtime"
 	"testing"
 
 	"github.com/issue9/assert/v4"
 )
+
+func TestModSourceDir(t *testing.T) {
+	a := assert.New(t, false)
+
+	// std
+	dir, err := ModSourceDir("encoding/json", "./", false)
+	a.NotError(err).FileExists(dir)
+
+	dir, err = ModSourceDir("note-exists", "./", false)
+	a.NotError(err).FileNotExists(dir)
+
+	// require
+
+	dir, err = ModSourceDir("github.com/issue9/assert/v4", "./", false)
+	a.NotError(err).FileExists(dir)
+
+	// replace
+
+	dir, err = ModSourceDir("github.com/issue9/web/v2", "./testdata/go.mod", true)
+	a.NotError(err).NotEmpty(dir) // 此处 dir 可能不存在，因为 go.mod 关于 web 的包是随便指定的
+
+	dir, err = ModSourceDir("github.com/issue9/source", "./testdata/go.mod", true)
+	a.NotError(err).FileExists(dir)
+
+	// not exist
+
+	dir, err = ModSourceDir("github.com/issue9/not-exists", "./testdata/go.mod", true)
+	a.ErrorIs(err, fs.ErrNotExist).Empty(dir)
+}
 
 func TestModFile(t *testing.T) {
 	a := assert.New(t, false)

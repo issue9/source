@@ -6,15 +6,71 @@ package source
 
 import (
 	"errors"
+	"go/build"
+	"io/fs"
 	"os"
 	"path"
 	"path/filepath"
 	"slices"
+	"strings"
 
 	"golang.org/x/mod/modfile"
 )
 
 const modFile = "go.mod"
+
+var (
+	pkgSource = filepath.Join(build.Default.GOPATH, "pkg", "mod")
+	stdSource = filepath.Join(build.Default.GOROOT, "src")
+)
+
+// 查找模块 modPath 的源码目录
+//
+// 如果 modPath 是标准库的名称，如 encoding/json 等，则返回当前使用的 Go 版本对应的标准库地址。
+// 其它情况则从 modDir 指向的 go.mod 中查找 require 或是 replace 字段的定义，
+// 并根据这些定义找到其指向的源码路径。
+//
+// modPath 需要查找到模块路径，如果指向的是模块下的包级别的导出路径，是找不到的；
+// modDir go.mod 所在的目录；
+// replace 是否考虑 go.mod 中的 replace 指令的影响；
+//
+// NOTE: 这并不会检测 dir 指向目录是否真实且准确。
+func ModSourceDir(modPath, modDir string, replace bool) (dir string, err error) {
+	if strings.IndexByte(modPath, '.') < 0 {
+		return filepath.Join(stdSource, modPath), nil
+	}
+
+	_, mod, err := ModFile(modDir)
+	if err != nil {
+		return "", err
+	}
+
+	for _, pkg := range mod.Require {
+		if pkg.Mod.Path != modPath {
+			continue
+		}
+
+		if !replace {
+			return filepath.Join(pkgSource, pkg.Mod.Path+"@"+pkg.Mod.Version), nil
+		}
+
+		index := slices.IndexFunc(mod.Replace, func(r *modfile.Replace) bool {
+			return r.Old.Path == pkg.Mod.Path
+		})
+
+		if index < 0 {
+			return filepath.Join(pkgSource, pkg.Mod.Path+"@"+pkg.Mod.Version), nil
+		}
+
+		p := mod.Replace[index].New.Path
+		if !filepath.IsAbs(p) {
+			p = filepath.Join(modDir, p)
+		}
+		return filepath.Abs(p)
+	}
+
+	return "", fs.ErrNotExist
+}
 
 // ModFile 文件或目录 p 所在模块的 go.mod 内容
 //
