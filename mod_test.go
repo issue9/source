@@ -27,6 +27,9 @@ func TestModSourceDir(t *testing.T) {
 	dir, err = ModSourceDir("github.com/issue9/assert/v4", "./", false)
 	a.NotError(err).FileExists(dir)
 
+	dir, err = ModSourceDir("github.com/issue9/assert/v4/rest", "./", false)
+	a.NotError(err).FileExists(dir)
+
 	// replace
 
 	dir, err = ModSourceDir("github.com/issue9/web/v2", "./testdata/go.mod", true)
