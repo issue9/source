@@ -53,6 +53,11 @@ func PkgSourceDir(pkgPath, modDir string, replace bool) (dir string, err error) 
 			continue
 		}
 		suffix := strings.TrimPrefix(pkgPath, pkg.Mod.Path)
+		// github.com/issue9/web 与 github.com/issue9/webuse 也匹配，但不是同一个包
+		// 只有 github.com/issue9/web 与 github.com/issue9/web/v4 这种才行
+		if suffix != "" && suffix[0] != '/' {
+			continue
+		}
 
 		if !replace {
 			return filepath.Join(pkgSource, pkg.Mod.Path+"@"+pkg.Mod.Version+suffix), nil

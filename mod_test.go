@@ -34,6 +34,9 @@ func TestPkgSourceDir(t *testing.T) {
 	a.NotError(err).FileExists(dir).
 		True(strings.HasSuffix(filepath.ToSlash(dir), "assert/v4@v4.3.0/rest"))
 
+	dir, err = PkgSourceDir("github.com/issue9/assertxx", "./", false)
+	a.ErrorIs(err, fs.ErrNotExist)
+
 	// replace
 
 	dir, err = PkgSourceDir("github.com/issue9/web/v2", "./testdata/go.mod", true)
