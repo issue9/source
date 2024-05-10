@@ -45,6 +45,9 @@ func ModSourceDir(pkgPath, modDir string, replace bool) (dir string, err error) 
 		return "", err
 	}
 
+	// 保证长的在前面，这样在碰到 xxx.com/pkg/v2 与 xxx.com/pkg 两个包同时出现时，v2 会出现在前面，拥有优先匹配的权利。
+	slices.SortFunc(mod.Require, func(a, b *modfile.Require) int { return len(b.Mod.Path) - len(a.Mod.Path) })
+
 	for _, pkg := range mod.Require {
 		if !strings.HasPrefix(pkgPath, pkg.Mod.Path) {
 			continue
