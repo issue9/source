@@ -35,7 +35,7 @@ var (
 // replace 是否考虑 go.mod 中的 replace 指令的影响；
 //
 // NOTE: 这并不会检测 dir 指向目录是否真实且准确。
-func ModSourceDir(pkgPath, modDir string, replace bool) (dir string, err error) {
+func PkgSourceDir(pkgPath, modDir string, replace bool) (dir string, err error) {
 	if strings.IndexByte(pkgPath, '.') < 0 {
 		return filepath.Join(stdSource, pkgPath), nil
 	}
@@ -135,7 +135,7 @@ LOOP:
 	}
 }
 
-// PkgPath 文件或目录 p 所在 Go 文件的导出路径
+// PkgPath 文件或目录 p 的导出路径
 //
 // 会向上查找 go.mod，根据 go.mod 中的 module 结合当前目录组成当前目录的导出路径。
 func PkgPath(p string) (string, error) {
