@@ -65,7 +65,7 @@ func TestCurrentLocation(t *testing.T) {
 func TestStack(t *testing.T) {
 	a := assert.New(t, false)
 
-	str := Stack(1, "message", 12)
+	str := Stack(1, true, "message", 12)
 	t.Log(str)
 	a.True(strings.HasPrefix(str, "message 12"))
 	a.True(strings.Contains(str, "source_test.go:68"), str) // 依赖调用 Stack 的行号

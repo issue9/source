@@ -77,9 +77,9 @@ func CurrentFunction() string {
 //   - 2 表示 Stack 的调用者，以此类推；
 //
 // msg 表示需要输出的额外信息；
-func Stack(skip int, msg ...any) string {
+func Stack(skip int, ignoreRuntime bool, msg ...any) string {
 	buf := &bytes.Buffer{}
-	DumpStack(buf, skip+1, msg...)
+	DumpStack(buf, skip+1, ignoreRuntime, msg...)
 	return buf.String()
 }
 
@@ -90,8 +90,9 @@ func Stack(skip int, msg ...any) string {
 //   - 1 表示 Stack 自身；
 //   - 2 表示 Stack 的调用者，以此类推；
 //
+// ignoreRuntime 表示是否不显示 runtime 下的系统调用信息；
 // msg 表示需要输出的额外信息；
-func DumpStack(w io.Writer, skip int, msg ...any) {
+func DumpStack(w io.Writer, skip int, ignoreRuntime bool, msg ...any) {
 	pc := make([]uintptr, 10)
 	n := runtime.Callers(skip, pc)
 	if n == 0 {
@@ -109,7 +110,7 @@ func DumpStack(w io.Writer, skip int, msg ...any) {
 			break
 		}
 
-		if strings.Contains(frame.File, "runtime/") { // 忽略 runtime 下的系统调用
+		if ignoreRuntime && strings.Contains(frame.File, "runtime/") {
 			continue
 		}
 
