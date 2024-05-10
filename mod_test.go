@@ -6,7 +6,9 @@ package source
 
 import (
 	"io/fs"
+	"path/filepath"
 	"runtime"
+	"strings"
 	"testing"
 
 	"github.com/issue9/assert/v4"
@@ -25,10 +27,12 @@ func TestModSourceDir(t *testing.T) {
 	// require
 
 	dir, err = ModSourceDir("github.com/issue9/assert/v4", "./", false)
-	a.NotError(err).FileExists(dir)
+	a.NotError(err).FileExists(dir).
+		True(strings.HasSuffix(filepath.ToSlash(dir), "assert/v4@v4.3.0"))
 
 	dir, err = ModSourceDir("github.com/issue9/assert/v4/rest", "./", false)
-	a.NotError(err).FileExists(dir)
+	a.NotError(err).FileExists(dir).
+		True(strings.HasSuffix(filepath.ToSlash(dir), "assert/v4@v4.3.0/rest"))
 
 	// replace
 
