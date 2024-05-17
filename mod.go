@@ -15,6 +15,7 @@ import (
 	"strings"
 
 	"golang.org/x/mod/modfile"
+	"golang.org/x/mod/module"
 )
 
 const modFile = "go.mod"
@@ -60,12 +61,22 @@ func PkgSourceDir(pkgPath, modDir string, replace bool) (dir string, err error) 
 		}
 
 		if !replace {
-			return filepath.Join(pkgSource, pkg.Mod.Path+"@"+pkg.Mod.Version+suffix), nil
+			p, err := escapePath(pkg.Mod.Path, pkg.Mod.Version, suffix)
+			if err != nil {
+				println("1:", err.Error())
+				return "", err
+			}
+			return filepath.Join(pkgSource, p), nil
 		}
 
 		index := slices.IndexFunc(mod.Replace, func(r *modfile.Replace) bool { return r.Old.Path == pkg.Mod.Path })
 		if index < 0 {
-			return filepath.Join(pkgSource, pkg.Mod.Path+"@"+pkg.Mod.Version+suffix), nil
+			p, err := escapePath(pkg.Mod.Path, pkg.Mod.Version, suffix)
+			if err != nil {
+				println("2:", err.Error())
+				return "", err
+			}
+			return filepath.Join(pkgSource, p), nil
 		}
 
 		p := mod.Replace[index].New.Path
@@ -76,6 +87,22 @@ func PkgSourceDir(pkgPath, modDir string, replace bool) (dir string, err error) 
 	}
 
 	return "", fs.ErrNotExist
+}
+
+func escapePath(p, v, s string) (path string, err error) {
+	p, err = module.EscapePath(p)
+	if err != nil {
+		return "", err
+	}
+
+	v, err = module.EscapeVersion(v)
+	if err != nil {
+		return "", err
+	}
+
+	// 不对 s 作转码，同一个项目下应该不至于有不同大小写的同名包。
+
+	return p + "@" + v + s, nil
 }
 
 // ModFile 文件或目录 p 所在模块的 go.mod 内容
