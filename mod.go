@@ -25,7 +25,7 @@ var (
 	stdSource = filepath.Join(build.Default.GOROOT, "src")
 )
 
-// 查找包 pkgPath 的源码目录
+// PkgSourceDir 查找包 pkgPath 的源码目录
 //
 // 如果 pkgPath 是标准库的名称，如 encoding/json 等，则返回当前使用的 Go 版本对应的标准库地址。
 // 其它情况则从 modDir 指向的 go.mod 中查找 require 或是 replace 字段的定义，
@@ -60,30 +60,23 @@ func PkgSourceDir(pkgPath, modDir string, replace bool) (dir string, err error) 
 			continue
 		}
 
-		if !replace {
-			p, err := escapePath(pkg.Mod.Path, pkg.Mod.Version, suffix)
-			if err != nil {
-				println("1:", err.Error())
-				return "", err
-			}
-			return filepath.Join(pkgSource, p), nil
-		}
-
 		index := slices.IndexFunc(mod.Replace, func(r *modfile.Replace) bool { return r.Old.Path == pkg.Mod.Path })
-		if index < 0 {
+		if !replace || index < 0 {
 			p, err := escapePath(pkg.Mod.Path, pkg.Mod.Version, suffix)
 			if err != nil {
-				println("2:", err.Error())
 				return "", err
 			}
 			return filepath.Join(pkgSource, p), nil
 		}
 
 		p := mod.Replace[index].New.Path
-		if !filepath.IsAbs(p) {
-			p = filepath.Join(modDir, p)
+		if p != "" && (p[0] == '.' || p[0] == '/') { // 指向本地
+			if !filepath.IsAbs(p) {
+				p = filepath.Join(modDir, p)
+			}
+			return filepath.Abs(p)
 		}
-		return filepath.Abs(p)
+		return PkgSourceDir(p, modDir, false)
 	}
 
 	return "", fs.ErrNotExist
