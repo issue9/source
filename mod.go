@@ -30,10 +30,13 @@ var (
 // 如果 pkgPath 是标准库的名称，如 encoding/json 等，则返回当前使用的 Go 版本对应的标准库地址。
 // 其它情况则从 modDir 指向的 go.mod 中查找 require 或是 replace 字段的定义，
 // 并根据这些定义找到其指向的源码路径。
+// 如果 modDir 中不存在 go.mod 会尝试向上一级目录查找。
 //
-// pkgPath 需要查找的包路径，如果指向的是模块下的包级别的导出路径，则会尝试使用 strings.HasPrefix 与 require 指令进行对比；
+// pkgPath 需要查找的包路径，如果指向的是模块下的包级别的导出路径，则会尝试使用 [strings.HasPrefix] 与 require 指令进行对比；
 // modDir go.mod 所在的目录，将在该文件中查找 pkgPath 指定的目录；
 // replace 是否考虑 go.mod 中的 replace 指令的影响；
+//
+// 如果找不到，会返回 [fs.ErrNotExist]
 //
 // NOTE: 这并不会检测 dir 指向目录是否真实且准确。
 func PkgSourceDir(pkgPath, modDir string, replace bool) (dir string, err error) {
