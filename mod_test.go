@@ -28,11 +28,11 @@ func TestPkgSourceDir(t *testing.T) {
 
 	dir, err = PkgSourceDir("github.com/issue9/assert/v4", "./", false)
 	a.NotError(err).FileExists(dir).
-		True(strings.HasSuffix(filepath.ToSlash(dir), "assert/v4@v4.3.0"))
+		True(strings.HasSuffix(filepath.ToSlash(dir), "assert/v4@v4.3.1"))
 
 	dir, err = PkgSourceDir("github.com/issue9/assert/v4/rest", "./", false)
 	a.NotError(err).FileExists(dir).
-		True(strings.HasSuffix(filepath.ToSlash(dir), "assert/v4@v4.3.0/rest"))
+		True(strings.HasSuffix(filepath.ToSlash(dir), "assert/v4@v4.3.1/rest"))
 
 	dir, err = PkgSourceDir("github.com/issue9/assertxx", "./", false)
 	a.ErrorIs(err, fs.ErrNotExist).Empty(dir)
