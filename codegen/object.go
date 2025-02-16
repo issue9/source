@@ -13,15 +13,26 @@ import (
 )
 
 // GoDefine 返回对象 v 在 Go 源码中的定义方式
-func GoDefine(t reflect.Type) string {
+//
+// t 需要转换的类型；
+// m 需要特殊定义的类型；
+// unexported 是否导出小写字段；
+func GoDefine(t reflect.Type, m map[reflect.Type]string, unexported bool) string {
 	buf := &errwrap.Buffer{}
-	goDefine(buf, 0, t)
+	goDefine(buf, 0, t, m, unexported)
 	return buf.String()
 }
 
-func goDefine(buf *errwrap.Buffer, indent int, t reflect.Type) {
+func goDefine(buf *errwrap.Buffer, indent int, t reflect.Type, m map[reflect.Type]string, unexported bool) {
 	for t.Kind() == reflect.Pointer {
 		t = t.Elem()
+	}
+
+	if len(m) > 0 {
+		if s, found := m[t]; found {
+			buf.WString(s)
+			return
+		}
 	}
 
 	switch t.Kind() {
@@ -35,12 +46,16 @@ func goDefine(buf *errwrap.Buffer, indent int, t reflect.Type) {
 		indent++
 		for i := 0; i < t.NumField(); i++ {
 			f := t.Field(i)
+			if !unexported && !f.IsExported() {
+				continue
+			}
+
 			if f.Type.Kind() == reflect.Func || f.Type.Kind() == reflect.Chan {
 				continue
 			}
 
 			buf.WString(strings.Repeat("\t", indent)).WString(f.Name).WByte('\t')
-			goDefine(buf, indent, f.Type)
+			goDefine(buf, indent, f.Type, m, unexported)
 
 			if f.Tag != "" {
 				buf.WByte('\t').WByte('`').WString(string(f.Tag)).WByte('`')
