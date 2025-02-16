@@ -20,8 +20,17 @@ import (
 // m 需要特殊定义的类型；
 // unexported 是否导出小写字段；
 func GoDefine(t reflect.Type, m map[reflect.Type]string, unexported bool) string {
+	for t.Kind() == reflect.Pointer {
+		t = t.Elem()
+	}
+
 	buf := &errwrap.Buffer{}
 	goDefine(buf, 0, t, m, unexported, false)
+	s := buf.String()
+
+	if len(s) > 0 && s[0] == '{' { // 结构可能由于 m 的关系返回一个非结构体的类型定义，所以只能由开头是否为 { 判断是否为结构体。
+		return "type " + t.Name() + " struct " + s
+	}
 	return buf.String()
 }
 

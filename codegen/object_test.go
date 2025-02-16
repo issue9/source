@@ -43,10 +43,10 @@ type object5 struct {
 func TestGoDefine(t *testing.T) {
 	a := assert.New(t, false)
 
-	wont := "{\n\tInt\tint\t`json:\"int\" yaml:\"int\"`\n\tArray\t[5]int\n\tSlice\t[]string\n\tByte\tuint8\n}"
+	wont := "type object1 struct {\n\tInt\tint\t`json:\"int\" yaml:\"int\"`\n\tArray\t[5]int\n\tSlice\t[]string\n\tByte\tuint8\n}"
 	a.Equal(GoDefine(reflect.TypeFor[object1](), nil, false), wont)
 
-	wont = "{\n\tInt\tint\t`json:\"int\" yaml:\"int\"`\n\tObject\t{\n\t\tInt\tint\t`json:\"int\" yaml:\"int\"`\n\t\tArray\t[5]int\n\t\tSlice\t[]string\n\t\tByte\tuint8\n\t}\t`json:\"object\"`\n}"
+	wont = "type object2 struct {\n\tInt\tint\t`json:\"int\" yaml:\"int\"`\n\tObject\t{\n\t\tInt\tint\t`json:\"int\" yaml:\"int\"`\n\t\tArray\t[5]int\n\t\tSlice\t[]string\n\t\tByte\tuint8\n\t}\t`json:\"object\"`\n}"
 	a.Equal(GoDefine(reflect.TypeFor[*object2](), nil, false), wont)
 
 	a.Equal(GoDefine(reflect.TypeFor[int](), nil, false), "int")
@@ -60,12 +60,15 @@ func TestGoDefine(t *testing.T) {
 	a.Equal(GoDefine(reflect.TypeFor[time.Time](), m, false), "string")
 	a.Equal(GoDefine(reflect.TypeFor[*time.Time](), m, false), "string")
 
-	a.Equal(GoDefine(reflect.TypeFor[*object3](), m, false), "{\n\tT\tstring\t`json:\"t\"`\n}")
-	a.Equal(GoDefine(reflect.TypeFor[*object3](), m, true), "{\n\tint\tint\n\tT\tstring\t`json:\"t\"`\n}")
+	a.Equal(GoDefine(reflect.TypeFor[*object3](), m, false), "type object3 struct {\n\tT\tstring\t`json:\"t\"`\n}")
+	a.Equal(GoDefine(reflect.TypeFor[*object3](), m, true), "type object3 struct {\n\tint\tint\n\tT\tstring\t`json:\"t\"`\n}")
 
-	a.Equal(GoDefine(reflect.TypeFor[*object4](), m, true), "{\n\tint\tint\n\tT\tstring\t`json:\"t\"`\n\tInt\tint\n}")
-	a.Equal(GoDefine(reflect.TypeFor[*object4](), m, false), "{\n\tT\tstring\t`json:\"t\"`\n\tInt\tint\n}")
+	a.Equal(GoDefine(reflect.TypeFor[*object4](), m, true), "type object4 struct {\n\tint\tint\n\tT\tstring\t`json:\"t\"`\n\tInt\tint\n}")
+	a.Equal(GoDefine(reflect.TypeFor[*object4](), m, false), "type object4 struct {\n\tT\tstring\t`json:\"t\"`\n\tInt\tint\n}")
 
-	a.Equal(GoDefine(reflect.TypeFor[*object5](), m, true), "{\n\tint\tint\n\tT\tstring\t`json:\"t\"`\n\tInt\tint\n\tStr\tstring\n}")
-	a.Equal(GoDefine(reflect.TypeFor[*object5](), m, false), "{\n\tT\tstring\t`json:\"t\"`\n\tInt\tint\n\tStr\tstring\n}")
+	a.Equal(GoDefine(reflect.TypeFor[*object5](), m, true), "type object5 struct {\n\tint\tint\n\tT\tstring\t`json:\"t\"`\n\tInt\tint\n\tStr\tstring\n}")
+	a.Equal(GoDefine(reflect.TypeFor[*object5](), m, false), "type object5 struct {\n\tT\tstring\t`json:\"t\"`\n\tInt\tint\n\tStr\tstring\n}")
+
+	a.Equal(GoDefine(reflect.TypeFor[time.Time](), m, false), "string")
+	a.Equal(GoDefine(reflect.TypeFor[time.Time](), nil, false), "type Time struct {\n}")
 }
