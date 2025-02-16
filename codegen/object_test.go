@@ -30,6 +30,16 @@ type object3 struct {
 	T   time.Time `json:"t"`
 }
 
+type object4 struct {
+	*object3
+	Int int
+}
+
+type object5 struct {
+	*object4
+	Str string
+}
+
 func TestGoDefine(t *testing.T) {
 	a := assert.New(t, false)
 
@@ -52,4 +62,10 @@ func TestGoDefine(t *testing.T) {
 
 	a.Equal(GoDefine(reflect.TypeFor[*object3](), m, false), "{\n\tT\tstring\t`json:\"t\"`\n}")
 	a.Equal(GoDefine(reflect.TypeFor[*object3](), m, true), "{\n\tint\tint\n\tT\tstring\t`json:\"t\"`\n}")
+
+	a.Equal(GoDefine(reflect.TypeFor[*object4](), m, true), "{\n\tint\tint\n\tT\tstring\t`json:\"t\"`\n\tInt\tint\n}")
+	a.Equal(GoDefine(reflect.TypeFor[*object4](), m, false), "{\n\tT\tstring\t`json:\"t\"`\n\tInt\tint\n}")
+
+	a.Equal(GoDefine(reflect.TypeFor[*object5](), m, true), "{\n\tint\tint\n\tT\tstring\t`json:\"t\"`\n\tInt\tint\n\tStr\tstring\n}")
+	a.Equal(GoDefine(reflect.TypeFor[*object5](), m, false), "{\n\tT\tstring\t`json:\"t\"`\n\tInt\tint\n\tStr\tstring\n}")
 }
