@@ -40,13 +40,18 @@ type object5 struct {
 	Str string
 }
 
+type object6 struct {
+	XMLName struct{} `json:"root"`
+	Str     []*object3
+}
+
 func TestGoDefine(t *testing.T) {
 	a := assert.New(t, false)
 
 	wont := "type object1 struct {\n\tInt\tint\t`json:\"int\" yaml:\"int\"`\n\tArray\t[5]int\n\tSlice\t[]string\n\tByte\tuint8\n}"
 	a.Equal(GoDefine(reflect.TypeFor[object1](), nil, false), wont)
 
-	wont = "type object2 struct {\n\tInt\tint\t`json:\"int\" yaml:\"int\"`\n\tObject\t{\n\t\tInt\tint\t`json:\"int\" yaml:\"int\"`\n\t\tArray\t[5]int\n\t\tSlice\t[]string\n\t\tByte\tuint8\n\t}\t`json:\"object\"`\n}"
+	wont = "type object2 struct {\n\tInt\tint\t`json:\"int\" yaml:\"int\"`\n\tObject\t*struct {\n\t\tInt\tint\t`json:\"int\" yaml:\"int\"`\n\t\tArray\t[5]int\n\t\tSlice\t[]string\n\t\tByte\tuint8\n\t}\t`json:\"object\"`\n}"
 	a.Equal(GoDefine(reflect.TypeFor[*object2](), nil, false), wont)
 
 	a.Equal(GoDefine(reflect.TypeFor[int](), nil, false), "int")
@@ -71,4 +76,6 @@ func TestGoDefine(t *testing.T) {
 
 	a.Equal(GoDefine(reflect.TypeFor[time.Time](), m, false), "string")
 	a.Equal(GoDefine(reflect.TypeFor[time.Time](), nil, false), "type Time struct {\n}")
+
+	a.Equal(GoDefine(reflect.TypeFor[object6](), m, false), "type object6 struct {\n\tXMLName\tstruct {}\t`json:\"root\"`\n\tStr\t[]*struct {\n\t\tT\tstring\t`json:\"t\"`\n\t}\n}")
 }
