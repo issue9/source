@@ -17,15 +17,16 @@ import (
 // 对于结构类型会自动展开。
 //
 // t 需要转换的类型；
-// m 需要特殊定义的类型；
+// m 需要特殊定义的类型，可以为空；
+// c 为对象的字段生成注释，可以为空；
 // unexported 是否导出小写字段；
-func GoDefine(t reflect.Type, m map[reflect.Type]string, unexported bool) string {
+func GoDefine(t reflect.Type, m map[reflect.Type]string, c func(*reflect.StructField) string, unexported bool) string {
 	for t.Kind() == reflect.Pointer {
 		t = t.Elem()
 	}
 
 	buf := &errwrap.Buffer{}
-	goDefine(buf, 0, t, m, unexported, false)
+	goDefine(buf, 0, t, m, c, unexported, false)
 	s := buf.String()
 
 	if strings.HasPrefix(s, "struct {") { // 结构可能由于 m 的关系返回一个非结构体的类型定义，所以只能由开头是否为 struct { 判断是否为结构体。
@@ -34,7 +35,7 @@ func GoDefine(t reflect.Type, m map[reflect.Type]string, unexported bool) string
 	return buf.String()
 }
 
-func goDefine(buf *errwrap.Buffer, indent int, t reflect.Type, m map[reflect.Type]string, unexported, anonymous bool) {
+func goDefine(buf *errwrap.Buffer, indent int, t reflect.Type, m map[reflect.Type]string, c func(*reflect.StructField) string, unexported, anonymous bool) {
 	if len(m) > 0 {
 		if s, found := m[t]; found {
 			buf.WString(s)
@@ -46,13 +47,13 @@ func goDefine(buf *errwrap.Buffer, indent int, t reflect.Type, m map[reflect.Typ
 	case reflect.Func, reflect.Chan: // 忽略
 	case reflect.Pointer:
 		buf.WByte('*')
-		goDefine(buf, indent, t.Elem(), m, unexported, anonymous)
+		goDefine(buf, indent, t.Elem(), m, c, unexported, anonymous)
 	case reflect.Slice:
 		buf.WString("[]")
-		goDefine(buf, indent, t.Elem(), m, unexported, anonymous)
+		goDefine(buf, indent, t.Elem(), m, c, unexported, anonymous)
 	case reflect.Array:
 		buf.WByte('[').WString(strconv.Itoa(t.Len())).WByte(']')
-		goDefine(buf, indent, t.Elem(), m, unexported, anonymous)
+		goDefine(buf, indent, t.Elem(), m, c, unexported, anonymous)
 	case reflect.Struct:
 		if !anonymous {
 			if t.NumField() == 0 {
@@ -72,7 +73,7 @@ func goDefine(buf *errwrap.Buffer, indent int, t reflect.Type, m map[reflect.Typ
 				for tt.Kind() == reflect.Pointer { // 匿名字段需要去掉指针类型
 					tt = tt.Elem()
 				}
-				goDefine(buf, indent, tt, m, unexported, true)
+				goDefine(buf, indent, tt, m, c, unexported, true)
 				continue
 			}
 
@@ -85,10 +86,16 @@ func goDefine(buf *errwrap.Buffer, indent int, t reflect.Type, m map[reflect.Typ
 			}
 
 			buf.WString(strings.Repeat("\t", indent)).WString(f.Name).WByte('\t')
-			goDefine(buf, indent, f.Type, m, unexported, false)
+			goDefine(buf, indent, f.Type, m, c, unexported, false)
 
 			if f.Tag != "" {
 				buf.WByte('\t').WByte('`').WString(string(f.Tag)).WByte('`')
+			}
+
+			if c != nil {
+				if comment := c(&f); comment != "" {
+					buf.WString("\t// ").WString(comment)
+				}
 			}
 
 			buf.WByte('\n')
