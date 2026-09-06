@@ -1,4 +1,4 @@
-// SPDX-FileCopyrightText: 2025 caixw
+// SPDX-FileCopyrightText: 2025-2026 caixw
 //
 // SPDX-License-Identifier: MIT
 
@@ -65,9 +65,7 @@ func goDefine(buf *errwrap.Buffer, indent int, t reflect.Type, m map[reflect.Typ
 			indent++
 		}
 
-		for i := 0; i < t.NumField(); i++ {
-			f := t.Field(i)
-
+		for f := range t.Fields() {
 			if f.Anonymous {
 				tt := f.Type
 				for tt.Kind() == reflect.Pointer { // 匿名字段需要去掉指针类型

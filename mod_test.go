@@ -1,4 +1,4 @@
-// SPDX-FileCopyrightText: 2020-2024 caixw
+// SPDX-FileCopyrightText: 2020-2026 caixw
 //
 // SPDX-License-Identifier: MIT
 
@@ -11,7 +11,7 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/issue9/assert/v4"
+	"github.com/issue9/assert/v5"
 )
 
 func TestPkgSourceDir(t *testing.T) {
@@ -26,13 +26,13 @@ func TestPkgSourceDir(t *testing.T) {
 
 	// require
 
-	dir, err = PkgSourceDir("github.com/issue9/assert/v4", "./", false)
+	dir, err = PkgSourceDir("github.com/issue9/assert/v5", "./", false)
 	a.NotError(err).FileExists(dir).
-		True(strings.HasSuffix(filepath.ToSlash(dir), "assert/v4@v4.3.1"))
+		True(strings.HasSuffix(filepath.ToSlash(dir), "assert/v5@v5.0.0"))
 
-	dir, err = PkgSourceDir("github.com/issue9/assert/v4/rest", "./", false)
+	dir, err = PkgSourceDir("github.com/issue9/assert/v5/rest", "./", false)
 	a.NotError(err).FileExists(dir).
-		True(strings.HasSuffix(filepath.ToSlash(dir), "assert/v4@v4.3.1/rest"))
+		True(strings.HasSuffix(filepath.ToSlash(dir), "assert/v5@v5.0.0/rest"))
 
 	dir, err = PkgSourceDir("github.com/issue9/assertxx", "./", false)
 	a.ErrorIs(err, fs.ErrNotExist).Empty(dir)
