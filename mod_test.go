@@ -11,7 +11,7 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/issue9/assert/v5"
+	"github.com/issue9/assert/v6"
 )
 
 func TestPkgSourceDir(t *testing.T) {
@@ -26,13 +26,13 @@ func TestPkgSourceDir(t *testing.T) {
 
 	// require
 
-	dir, err = PkgSourceDir("github.com/issue9/assert/v5", "./", false)
+	dir, err = PkgSourceDir("github.com/issue9/assert/v6", "./", false)
 	a.NotError(err).FileExists(dir).
-		True(strings.HasSuffix(filepath.ToSlash(dir), "assert/v5@v5.0.0"))
+		True(strings.HasSuffix(filepath.ToSlash(dir), "assert/v6@v6.0.0"))
 
-	dir, err = PkgSourceDir("github.com/issue9/assert/v5/rest", "./", false)
+	dir, err = PkgSourceDir("github.com/issue9/assert/v6/rest", "./", false)
 	a.NotError(err).FileExists(dir).
-		True(strings.HasSuffix(filepath.ToSlash(dir), "assert/v5@v5.0.0/rest"))
+		True(strings.HasSuffix(filepath.ToSlash(dir), "assert/v6@v6.0.0/rest"))
 
 	dir, err = PkgSourceDir("github.com/issue9/assertxx", "./", false)
 	a.ErrorIs(err, fs.ErrNotExist).Empty(dir)
